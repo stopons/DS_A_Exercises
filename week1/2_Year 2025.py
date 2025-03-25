@@ -11,17 +11,17 @@
     if x / year == 1:
         return True
     else:
-        return False""" # mia versione giusta a livello logico, ma errata a livello di efficacia
-    
+        return False""" # My version is correct logically, but wrong in terms of effectiveness (Big-O)
+
 def check_year(year):
-    first_half = year // 100      # e.g., 2025 // 100 = 20
-    second_half = year % 100      # e.g., 2025 % 100 = 25
+    first_half = year // 100
+    second_half = year % 100
     return (first_half + second_half) ** 2 == year
 
-# più efficente, meno righe, usa la logica + aritmetica per troncare le prime 
-# due lettere / 100 e le ultime due prendendo il resto della divisione per 100 usando il modulo
-# % 100
-    
+# More efficient, fewer lines, use logic + arithmetic to truncate the first
+# two letters / 100 and the last two by taking the remainder of the
+# division by 100 using the modulo % 100
+
 if __name__ == "__main__":
     print(check_year(1995)) # False
     print(check_year(2024)) # False

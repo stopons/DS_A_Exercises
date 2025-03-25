@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import math
+
 def min_count(product_count, box_size):
     
     return math.ceil(product_count / box_size)
