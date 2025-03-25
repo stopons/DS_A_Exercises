@@ -33,7 +33,7 @@ def check_number(number):
         return True
     else:
         return False
-    
+
 
 # GPT reply at the end (which i don't really like in case i don't know how many 
 # "n" characters are requested, so tried to go for a more flexible code)
