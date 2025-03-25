@@ -1,39 +1,27 @@
 def find_segments(data):
 
     segments = []
-    
-    data_list = list(data)
     counter = 1
 
-    # Create a for loop to iterate through "data_list", incrementing "counter" each time the
+    # Create a for loop to iterate through "data" str, incrementing "counter" each time the
     # character is the same as the previous one (or None in case of the first character).
     # When the character is different, we'll append everything accumulated so far and reset
     # the count for the new character.
 
-    for i in range(1, len(data_list)):
-        # Initialize the list at the beginning of the for loop to be able to use ".append",
-        # and then convert it into a tuple.
-        segment_item = [] 
+    for i in range(1, len(data)):
+        # No need to initialise a list to convert then in tuple because i can append
+        # the list directly with "segments.append((counter, data[-1]))" at the end
 
-        if data_list[i] == data_list[i-1]:
+        if data[i] == data[i-1]:
             counter += 1
         else:
-            segment_item.append(counter)
-            segment_item.append(data_list[i-1])
-            segment_item = tuple(segment_item)
-            segments.append(segment_item)
-            counter = 1 #Reset the counter at the end
+            segments.append((counter, data[i-1]))
+            counter = 1 #Reset the counter for the upcoming "different" character
 
     # For the last character in the list
-    segment_item = [counter, data_list[-1]]  
-    segment_item = tuple(segment_item)
-    segments.append(segment_item)
-
+    segments.append((counter, data[-1]))
 
     return segments
-
-
-
 
 
 if __name__ == "__main__":
