@@ -12,27 +12,63 @@ class WordFinder:
 
     def count(self, word, grid_list):
 
-        # "checks" will break the "while loop" after checking the 6 directional
+        # "checks" will break the "while loop" after checking the 3 directional (combinined)
         # sides of "grid_list"
         checks = 0
         count = 0
-        store_letter = ""
-        word_len = len(word)
 
-        while (checks < 1):
-        
+        while (checks < 2):
+            
+            # left-right and right-left direction
             for row in range(len(grid_list)):
-                #print(row)
-                grid_row = str(grid_list[row])
-                #print(grid_row)
+                # left-right direction
+                grid_row = grid_list[row]
                 string_rep = ''.join(grid_row)
-                print(string_rep)
-                print(type(string_rep))
-                print("---------")
+
+                # right-left direction
+                rev_string_rep = string_rep[::-1]
+
+                # Count how many times the string matches "word" in both directions
                 count += string_rep.count(word)
+                count += rev_string_rep.count(word)
+
+                # Print put only for testing purposes
+                print(string_rep)
+                print("---------")
+                print(rev_string_rep)
+                print()
+            
+            checks += 1 # Flag left-right and right-left as completed
+
+
+            # top-bottom and bottom-top direction
+            max_columns = max(len(row) for row in grid)  # Get the longest row length
+
+            for column in range(max_columns):  
+                top_bottom_str = ""  # Reset for each column
+                rev_top_bottom_str = ""
+
+                for row in range(len(grid)): 
+                    if column < len(grid[row]):  # Avoid index errors if a row has less colums (charactes)
+                        # top-bottom direction
+                        top_bottom_str += grid[row][column]
+
+                        # bottom-top direction
+                        rev_top_bottom_str = top_bottom_str[::-1]
+
+                # Count how many times the string matches "word" in both directions
+                count += top_bottom_str.count(word)
+                count += rev_top_bottom_str.count(word)
+
+                # Print put only for testing purposes
+                print(top_bottom_str)
+                print("********")
+                print(rev_top_bottom_str)
+                print()
             
             checks += 1
 
+        # Print put only for testing purposes
         print(f"Checks: {checks}")
         print(f"Count: {count}")
 
