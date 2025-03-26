@@ -1,81 +1,100 @@
+"""You are given a grid of letters and your task is to find words in the grid. 
+A word can be read horizontally, vertically or diagonally in either direction.
+In a file wordgrid.py, implement the class WordFinder with the following methods:
+
+set_grid: sets the contents of the grid as a list, where each element is a string 
+representing a row of the grid count: counts the number of occurrences of the given word
+
+If a word can be read both forwards and backwards using the same letters, 
+that should count as one occurrence only.
+Your class will be tested using many different grids. 
+The height and width of each test grid is at most 20 letters. Each letter is in the range A - Z."""
+
+# I will use the DFS approach
+
 class WordFinder:
-    def set_grid(self, grid):
+    """Class to set the grid words in each row"""
 
-        grid_list = [list(row) for row in grid]
+    def __init__(self):
+        self.grid_list = []
+        self.rows = 0
+        self.cols = 0
 
-        for row in range(len(grid_list)):
-            print(grid_list[row]) 
+    def set_grid(self, grid_list):
+        """Function to set the grid words in each row"""
+        self.grid_list = grid_list
+        self.rows = len(grid_list)
+        self.cols = len(grid_list[0])
 
-        return grid_list
+    def count(self, word):
+        """Function to count how many times "word" is into the grid"""
 
-        
+        grid_list = self.grid_list
+        max_row = self.rows
+        max_col = self.cols
+        word_len = len(word)
 
-    def count(self, word, grid_list):
+        # Counts single char ("A") in all rows without iterating them info the for loops
+        if word_len == 1:
+            return sum(row.count(word) for row in grid_list)
 
-        # "checks" will break the "while loop" after checking the 3 directional (combinined)
-        # sides of "grid_list"
-        checks = 0
+        # Set directions for word matching using a DFS approach
+        directions = [
+            (0, 1),   # Right
+            (1, 0),   # Down
+            (1, 1),   # Down-Right
+            (1, -1),  # Down-Left
+            (0, -1),  # Left
+            (-1, 0),  # Up
+            (-1, -1), # Up-Left
+            (-1, 1)   # Up-Right
+        ]
+
+        # Forward direction
         count = 0
+        for row in range(max_row):
+            for col in range(max_col):
+                if grid_list[row][col] == word[0]:
+                    for drow, dcol in directions:
+                        nrow, ncol = row, col
+                        matched = True
+                        for word_i in range(1, word_len):
+                            nrow += drow
+                            ncol += dcol
+                            if nrow < 0 or nrow >= max_row or ncol < 0 or ncol >= max_col:
+                                matched = False
+                                break
+                            if grid_list[nrow][ncol] != word[word_i]:
+                                matched = False
+                                break
+                        if matched:
+                            count += 1
 
-        while (checks < 2):
-            
-            # left-right and right-left direction
-            for row in range(len(grid_list)):
-                # left-right direction
-                grid_row = grid_list[row]
-                string_rep = ''.join(grid_row)
-
-                # right-left direction
-                rev_string_rep = string_rep[::-1]
-
-                # Count how many times the string matches "word" in both directions
-                count += string_rep.count(word)
-                count += rev_string_rep.count(word)
-
-                # Print put only for testing purposes
-                print(string_rep)
-                print("---------")
-                print(rev_string_rep)
-                print()
-            
-            checks += 1 # Flag left-right and right-left as completed
-
-
-            # top-bottom and bottom-top direction
-            max_columns = max(len(row) for row in grid)  # Get the longest row length
-
-            for column in range(max_columns):  
-                top_bottom_str = ""  # Reset for each column
-                rev_top_bottom_str = ""
-
-                for row in range(len(grid)): 
-                    if column < len(grid[row]):  # Avoid index errors if a row has less colums (charactes)
-                        # top-bottom direction
-                        top_bottom_str += grid[row][column]
-
-                        # bottom-top direction
-                        rev_top_bottom_str = top_bottom_str[::-1]
-
-                # Count how many times the string matches "word" in both directions
-                count += top_bottom_str.count(word)
-                count += rev_top_bottom_str.count(word)
-
-                # Print put only for testing purposes
-                print(top_bottom_str)
-                print("********")
-                print(rev_top_bottom_str)
-                print()
-            
-            checks += 1
-
-        # Print put only for testing purposes
-        print(f"Checks: {checks}")
-        print(f"Count: {count}")
-
-
-        pass # Just put it here for now
-
-
+        # Backward direction
+        if word == word[::-1]:
+            return count // 2
+        else:
+            reverse_count = 0
+            reversed_word = word[::-1]
+            for row in range(max_row):
+                for col in range(max_col):
+                    if grid_list[row][col] == reversed_word[0]:
+                        for drow, dcol in directions:
+                            nrow, ncol = row, col
+                            matched = True
+                            for word_i in range(1, len(reversed_word)):
+                                nrow += drow
+                                ncol += dcol
+                                if nrow < 0 or nrow >= max_row or ncol < 0 or ncol >= max_col:
+                                    matched = False
+                                    break
+                                if grid_list[nrow][ncol] != word[word_i]:
+                                    matched = False
+                                    break
+                            if matched:
+                                reverse_count += 1
+            total = count + reverse_count
+            return total // 2 if reverse_count > 0 else count
 
 
 if __name__ == "__main__":
@@ -87,34 +106,10 @@ if __name__ == "__main__":
     finder = WordFinder()
     finder.set_grid(grid)
 
-    #print
-    (finder.count("TIRA", grid)) # 7 
-    #print(finder.count("TA")) # 13
-    #print(finder.count("RITARI")) # 3
-    #print(finder.count("A")) # 8
-    #print(finder.count("AA")) # 6
-    #print(finder.count("RAITA")) # 0  
-
-
-# This is something I dropped while coding because there's a more efficient way to achieve the same result:
-"""for row in range(len(grid_list)):
-            #print(row)
-            grid_row = str(grid_list[row])
-            print(grid_row)
-
-            for column in range(len(grid_row)):
-                if word[column] == grid_row[column]:
-                    store_letter += grid_row[column]
-                    if len(word) == len(store_letter):
-                        count += 1
-                    else:
-                        continue
-                else:
-                    store_letter = "" # Reset the string if the word is not matching"""
-            # I need to check if I can turn the specific row back into a string, 
-            # and from there, compare each character individually. When the word is complete, 
-            # I'll increment the count by 1
-
-# I didn't know about the method .count(), and i was trying to find a way to create it by myself
-# but i've stopped in the middle and had to search if there was a way to compare a string into another string
-# and return how many times that 1st string is into the 2nd one.
+    print("----------")
+    print(finder.count("TIRA")) # 7
+    print(finder.count("TA")) # 13
+    print(finder.count("RITARI")) # 3
+    print(finder.count("A")) # 8
+    print(finder.count("AA")) # 6
+    print(finder.count("RAITA")) # 0
