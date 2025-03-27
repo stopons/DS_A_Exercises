@@ -19,7 +19,7 @@ def count_rounds(numbers):
     for i in range(2, len(numbers)+1):
         if position[i] < position[i-1]:
             rounds += 1
-    
+
     return rounds
 
 
